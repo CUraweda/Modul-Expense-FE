@@ -1,0 +1,33 @@
+[
+  {
+    "submenu": false,
+    "title": "Dashboard",
+    "icon": "<BsFillHouseFill />",
+    "url": "/admin/dashboard",
+    "subtitle": []
+  },
+  {
+    "submenu": false,
+    "title": "Expense",
+    "icon": "<FaMoneyBillWave />",
+    "url": "/admin/expense",
+    "subtitle": []
+  },
+  {
+    "submenu": true,
+    "title": "Setting",
+    "icon": "<FaGear />",
+    "url": "/",
+    "subtitle": [
+      {
+        "name": "kelola User",
+        "url": "/admin/manage-user"
+      },
+      {
+        "name": "kelola kategori",
+        "url": "/admin/manage-kategori"
+      }
+    ]
+  }
+  
+]
