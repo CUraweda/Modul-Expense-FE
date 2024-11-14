@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { Auth } from "../midleware/Api";
+import { Auth } from "../middleware/api";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import { LoginStore } from "../store/Store";
+import { Store } from "../store/Store";
 import Swal from "sweetalert2";
 import logo from "../assets/logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -17,59 +17,62 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-//   const { setToken, setRole } = LoginStore();
+  const { setToken, setRole, setId } = Store();
 
-//   const formik = useFormik({
-//     initialValues: {
-//       email: "",
-//       password: "",
-//     },
-//     validationSchema: schema,
-//     onSubmit: async (values) => {
-//       try {
-//         setLoading(true);
-//         const emailLower = values.email.toLowerCase();
-//         const response = await Auth.Login(emailLower, values.password);
-//         const role = response.data.data.role_id;
-//         setRole(role.toString());
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: schema,
+    onSubmit: async (values) => {
+      try {
+        setLoading(true);
+        const emailLower = values.email.toLowerCase();
+        const { data } = await Auth.Login(emailLower, values.password);
+        console.log(data);
+       
+        if (data) {
+          const role = data.data.role;
 
-//         if (role) {
-//           setToken(response.data.tokens.access.token);
-//           if (role === 10) {
-//             navigate("/admin/home");
-//           } else {
-//             navigate("/petugas/data");
-//           }
-//         } else {
-//           Swal.fire({
-//             icon: "error",
-//             title: "Failed",
-//             text: "Your account does not have access!",
-//           });
-//         }
-//       } catch (error) {
-//         Swal.fire({
-//           icon: "error",
-//           title: "Failed",
-//           text: "Please make sure your username and password are correct!",
-//         });
-//       } finally {
-//         setLoading(false);
-//       }
-//     },
-//   });
+          setRole(role.toString());
+          setToken(data.data.access_token);
+          setId(data.data.userId)
+          if (role === 1) {
+            navigate("/admin/dashboard");
+          } else {
+            navigate("/admin/user");
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: "Your account does not have access!",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Failed",
+          text: "Please make sure your username and password are correct!",
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+  });
 
   const toggleShowPassword = () => setShowPassword(!showPassword);
 
   return (
     <div className="w-full bg-gradient-to-t from-yellow-300 to-yellow-500 flex justify-center items-center min-h-screen">
-      <div className="w-full sm:w-1/4 bg-white shadow-md rounded-md flex justify-center items-center p-3 flex-col">
+      <div className="w-full sm:w-1/4 md:w-1/2 bg-white shadow-md rounded-md flex justify-center items-center p-3 flex-col">
         <div className="w-32 mt-5">
           <img src={logo} alt="Logo" />
         </div>
         <span className="my-10 text-3xl text-black font-bold">Login</span>
         <form
-        //   onSubmit={formik.handleSubmit}
+          onSubmit={formik.handleSubmit}
           className="w-full flex flex-col gap-3"
         >
           <div className="w-full flex justify-center flex-col items-center">
@@ -80,13 +83,13 @@ const Login = () => {
               type="text"
               name="email"
               placeholder="Type here"
-            //   onChange={formik.handleChange}
-            //   value={formik.values.email}
+              onChange={formik.handleChange}
+              value={formik.values.email}
               className="input input-bordered w-5/6 glass shadow-md text-black"
             />
-            {/* {formik.errors.email && formik.touched.email ? (
+            {formik.errors.email && formik.touched.email ? (
               <div className="w-5/6 text-red-500">{formik.errors.email}</div>
-            ) : null} */}
+            ) : null}
           </div>
           <div className="w-full flex justify-center flex-col items-center relative">
             <label htmlFor="password" className="w-5/6 font-bold text-black">
@@ -96,8 +99,8 @@ const Login = () => {
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Type here"
-            //   onChange={formik.handleChange}
-            //   value={formik.values.password}
+              onChange={formik.handleChange}
+              value={formik.values.password}
               className="input input-bordered w-5/6 glass shadow-md text-black pr-10" // Added padding for icon
             />
             <button
@@ -111,9 +114,9 @@ const Login = () => {
                 <FaEye size="1.5rem" />
               )}{" "}
             </button>
-            {/* {formik.errors.password && formik.touched.password ? (
+            {formik.errors.password && formik.touched.password ? (
               <div className="w-5/6 text-red-500">{formik.errors.password}</div>
-            ) : null} */}
+            ) : null}
           </div>
           <div className="w-full flex justify-center my-5">
             <button
