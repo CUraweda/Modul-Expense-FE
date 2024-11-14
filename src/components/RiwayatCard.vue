@@ -154,7 +154,7 @@ const toggleFilter = () => {
 // Fungsi untuk mengambil data laporan dari API
 const getExpenses = async () => {
   try {
-    const response = await axios.get('http://localhost:5000/expenses'); // Mengambil data dari API
+    const response = await axios.get('https://api-prmn.curaweda.com:5000/expenses'); // Mengambil data dari API
     console.log('Data dari API:', response.data); // Log data dari API
     transactions.value = response.data; // Mengisi `transactions` dengan data dari API
   } catch (error) {

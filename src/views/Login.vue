@@ -41,7 +41,7 @@ export default {
     async handleLogin() {
       try {
         // Kirim request ke server menggunakan fetch API
-        const response = await fetch('http://localhost:5000/login', {  // Ganti dengan endpoint yang benar
+        const response = await fetch('https://api-prmn.curaweda.com:5000/login', {  // Ganti dengan endpoint yang benar
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

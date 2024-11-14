@@ -26,6 +26,7 @@ export default {
     return {
       chart: null, // Variabel untuk menyimpan chart
       selectedFilter: "2024", // Default tahun
+      valueData: [],
       months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] // Nama bulan
     };
   },
@@ -33,16 +34,19 @@ export default {
     async updateData() {
       // Fetch data dari API
       try {
-        const response = await axios.get("http://localhost:5000/expenses/summary", {
+        const response = await axios.get("https://api-prmn.curaweda.com:5000/expenses/summary", {
           params: { year: this.selectedFilter }
         });
 
+        
         const { costs } = response.data;
+        console.log({costs});
 
         // Perbarui chart dengan data baru
         this.chart.data.labels = this.months; // Gunakan nama bulan sebagai label
         this.chart.data.datasets[0].data = costs;
         this.chart.update(); // Render ulang chart
+        this.valueData = costs
       } catch (error) {
         console.error("Error fetching expenses summary:", error);
       }

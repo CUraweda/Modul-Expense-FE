@@ -86,7 +86,7 @@ let editUserId = null;
 // Fungsi untuk menampilkan daftar pengguna dari API
 async function fetchUsers() {
   try {
-    const response = await axios.get('http://localhost:5000/users');
+    const response = await axios.get('https://api-prmn.curaweda.com:5000/users');
     users.value = response.data;
   } catch (error) {
     console.error('Error fetching users:', error);
@@ -101,7 +101,7 @@ async function registerUser() {
       return;
     }
 
-    const response = await axios.post('http://localhost:5000/users', {
+    const response = await axios.post('https://api-prmn.curaweda.com:5000/users', {
       username: formUser.value.username,
       nama: formUser.value.nama,
       role: formUser.value.role,
@@ -129,7 +129,7 @@ function showEditUserForm(user) {
 // Fungsi untuk memperbarui data user
 async function updateUser() {
   try {
-    await axios.put(`http://localhost:5000/users/${editUserId}`, {
+    await axios.put(`https://api-prmn.curaweda.com:5000/users/${editUserId}`, {
       username: formUser.value.username,
       nama: formUser.value.nama,
       role: formUser.value.role,
@@ -148,7 +148,7 @@ async function updateUser() {
 // Fungsi untuk menghapus user
 async function deleteUser(userId) {
   try {
-    await axios.delete(`http://localhost:5000/users/${userId}`);
+    await axios.delete(`https://api-prmn.curaweda.com:5000/users/${userId}`);
     alert('User berhasil dihapus');
     fetchUsers();
   } catch (error) {

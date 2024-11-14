@@ -95,7 +95,7 @@ const formattedCost = computed({
 // Fungsi untuk menyimpan data pengeluaran
 const save = async () => {
   try {
-    const response = await axios.post('http://localhost:5000/expenses', {
+    const response = await axios.post('https://api-prmn.curaweda.com:5000/expenses', {
       title: formData.value.title,
       reporter: formData.value.reporter,
       date: formData.value.date,

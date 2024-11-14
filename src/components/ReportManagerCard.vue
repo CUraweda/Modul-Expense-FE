@@ -74,7 +74,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await axios.get("http://localhost:5000/expenses/verif");
+        const response = await axios.get("https://api-prmn.curaweda.com:5000/expenses/verif");
         this.laporanData = response.data.map(item => ({
           ...item,
           selectedAction: '' // Tambahkan properti untuk pilihan aksi
@@ -99,7 +99,7 @@ export default {
       
       try {
         // Kirim id sebagai bagian dari body request
-        const response = await axios.put("http://localhost:5000/expenses/update-status", {
+        const response = await axios.put("https://api-prmn.curaweda.com:5000/expenses/update-status", {
           id: laporan.id, // Asumsi id ada pada laporan
           status: laporan.selectedAction,
           komentar: laporan.komentar,

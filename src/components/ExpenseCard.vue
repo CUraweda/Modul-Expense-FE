@@ -29,7 +29,7 @@ export default {
   methods: {
     async updateData() {
       try {
-        const response = await axios.get("http://localhost:5000/expenses/total", {
+        const response = await axios.get("https://api-prmn.curaweda.com:5000/expenses/total", {
           params: { filter: this.selectedFilter }, // Kirim filter ke API
         });
         this.saldo = response.data.total; // Update saldo dengan total dari API
