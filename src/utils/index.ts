@@ -28,3 +28,17 @@ export const formatDate = (dateStr : any) => {
 
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`
 }
+
+export const formatDateLocal = (date: any): string => {
+  const d = new Date(date);
+
+  if (isNaN(d.getTime())) {
+    throw new Error("Invalid date");
+  }
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0"); 
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};

@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import Loading from "../components/Loading";
 import ManageUser from "../pages/ManageUser";
 import ManageKategori from "../pages/ManageKategori";
+import { Store } from "../store/Store";
 
 const Login = lazy(() => import("../pages/Login"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
@@ -14,9 +15,7 @@ interface ProtectedRouteProps {
   allowedRoles: number[];
 }
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
-  // const { token, role } = LoginStore();
-  const token = "asdasd";
-  const role = 1;
+  const { token, role } = Store();
 
   if (!token) {
     return <Navigate to="/" />;
@@ -28,7 +27,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
     if (roleId === 1) {
       return <Navigate to="/admin/dashboard" />;
     } else if (roleId === 2) {
-      return <Navigate to="/petugas/data" />;
+      return <Navigate to="/admin/dashboard" />;
     } else {
       return <Navigate to="/" />;
     }
@@ -52,7 +51,7 @@ const BaseRouter = () => {
          <Route
           path="/admin/dashboard"
           element={
-            <ProtectedRoute allowedRoles={[1]}>
+            <ProtectedRoute allowedRoles={[1,2]}>
               <Suspense fallback={<Loading />}>
                 <Layout>
                   <Dashboard/>
@@ -76,7 +75,7 @@ const BaseRouter = () => {
          <Route
           path="/admin/manage-user"
           element={
-            <ProtectedRoute allowedRoles={[1, 2]}>
+            <ProtectedRoute allowedRoles={[1]}>
               <Suspense fallback={<Loading />}>
                 <Layout>
                   <ManageUser/>
@@ -88,7 +87,7 @@ const BaseRouter = () => {
          <Route
           path="/admin/manage-kategori"
           element={
-            <ProtectedRoute allowedRoles={[1, 2]}>
+            <ProtectedRoute allowedRoles={[1]}>
               <Suspense fallback={<Loading />}>
                 <Layout>
                   <ManageKategori/>

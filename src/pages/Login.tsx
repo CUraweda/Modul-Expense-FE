@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Auth } from "../middleware/api";
+import { Auth } from "../middleware/restApi.service";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Store } from "../store/Store";
@@ -30,7 +30,6 @@ const Login = () => {
         setLoading(true);
         const emailLower = values.email.toLowerCase();
         const { data } = await Auth.Login(emailLower, values.password);
-        console.log(data);
        
         if (data) {
           const role = data.data.role;
@@ -38,11 +37,8 @@ const Login = () => {
           setRole(role.toString());
           setToken(data.data.access_token);
           setId(data.data.userId)
-          if (role === 1) {
-            navigate("/admin/dashboard");
-          } else {
-            navigate("/admin/user");
-          }
+          navigate("/admin/dashboard");
+         
         } else {
           Swal.fire({
             icon: "error",

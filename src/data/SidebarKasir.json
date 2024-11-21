@@ -1,0 +1,17 @@
+[
+  {
+    "submenu": false,
+    "title": "Dashboard",
+    "icon": "<BsFillHouseFill />",
+    "url": "/admin/dashboard",
+    "subtitle": []
+  },
+  {
+    "submenu": false,
+    "title": "Expense",
+    "icon": "<FaMoneyBillWave />",
+    "url": "/admin/expense",
+    "subtitle": []
+  }
+  
+]

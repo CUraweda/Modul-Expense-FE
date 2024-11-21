@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsListNested } from "react-icons/bs";
 import { iconMapping } from "./IconMapping";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
-import data from "../data/SidebarAdmin.json";
+import menuAdmin from "../data/SidebarAdmin.json";
+import menuKasir from "../data/SidebarKasir.json";
 
 // import karywan from "../data/karyawan.json"
 
@@ -22,8 +23,16 @@ type subtitle = {
 
 const Sidebar = () => {
   const Side = sessionStorage.getItem('side') || '/';
+  const role = sessionStorage.getItem('role') || '1';
   
   const [activeMenuItem, setActiveMenuItem] = useState<string>(Side);
+  const [data, setData] = useState<any>(null)
+  
+  useEffect(() => {
+    role === '1' ? setData(menuAdmin) : setData(menuKasir);
+    console.log(role);
+    
+  }, []);
 
   const handleMenuItemClick = (name: string) => {
     setActiveMenuItem(name);
@@ -56,7 +65,7 @@ const Sidebar = () => {
               </label>
             </div>
             <ul className="menu font-bold rounded-lg max-w-xs w-full text-gray-500">
-              {data.map((item: Menu, index: number) => (
+              {data?.map((item: Menu, index: number) => (
                 <React.Fragment key={`menu-` + index}>
                   {item.submenu ? (
                     <li className="my-2">
