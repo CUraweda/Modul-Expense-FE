@@ -12,10 +12,12 @@ const schema = Yup.object({
   email: Yup.string().required("email wajib diisi"),
   password: Yup.string().required("password wajib diisi"),
   role: Yup.string().required("role wajib diisi"),
+  id: Yup.string(),
 });
 
 const ManageUser = () => {
   const [users, setUsers] = useState<any>([]);
+  const [dataUsers, setDataUsers] = useState<any>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,12 +29,43 @@ const ManageUser = () => {
     setUsers(data?.data);
   };
 
+  const getUsersById = async (id: string) => {
+    const { data } = await UserApi.GetUserById(Number(id));
+    const dataUser = data.data;
+    setDataUsers(dataUser)
+    
+  };
+
+  const HandleEdit = async () => {
+    try {
+      const data = {
+        name: dataUsers.name,
+        email: dataUsers.email,
+        roleId: Number(dataUsers.roleId)
+      }
+      await UserApi.EditUser(Number(dataUsers.id), data);
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Your work has been saved",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      getUsers()
+      closeModal('edit-user')
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
       password: "",
       role: "",
+      id: "",
     },
     validationSchema: schema,
     onSubmit: async (values) => {
@@ -58,6 +91,7 @@ const ManageUser = () => {
           showConfirmButton: false,
           timer: 1500,
         });
+        formik.resetForm()
       } catch (error) {
         const errorMessage =
           error instanceof Error
@@ -74,6 +108,85 @@ const ManageUser = () => {
       }
     },
   });
+
+  const resetPassword = async (id: string | number | null) => {
+    try {
+      const idUser = Number(id);
+      const dataProps = {
+        password: "12345678",
+      }
+      const res = await UserApi.ResetPassword(idUser, dataProps);
+      if (res) {
+        Swal.fire({
+          title: "Success!",
+          text: "Password telah di reset",
+          icon: "success",
+        });
+      }
+      
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Gagal mereset password silakan coba beberapa saat lagi",
+      });
+      console.log(error);
+    }
+  };
+
+  const trigerReset = (id: string | number | null) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Password akan di reset ke 12345678",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Reset Password!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        resetPassword(id);
+      }
+    });
+  };
+
+  const deleteUser = async (id: string | number | null) => {
+    try {
+      const idExpense = Number(id);
+      const res = await UserApi.DeleteUser(idExpense);
+      if (res) {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your data has been deleted.",
+          icon: "success",
+        });
+      }
+      getUsers();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Failed",
+        text: "Gagal menghapus data silakan coba beberapa saat lagi",
+      });
+      console.log(error);
+    }
+  };
+
+  const trigerDelete = (id: string | number | null) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteUser(id);
+      }
+    });
+  };
 
   return (
     <div className="p-5 w-full">
@@ -110,30 +223,28 @@ const ManageUser = () => {
                   <td>
                     <div className="w-full flex gap-1">
                       <button
-                        className="btn btn-sm bg-orange-500 text-white font-bold "
-                        // onClick={() => {
-                        //   openModal("add-kategori"),
-                        //     setEdit(true),
-                        //     setIdKatgeori(item.id),
-                        //     setName(item.name);
-                        // }}
+                        className="btn btn-sm bg-orange-500 text-white font-bold tooltip"
+                        data-tip="Edit"
+                        onClick={() => {
+                          openModal("edit-user"),
+                            // setEdit(true),
+                            getUsersById(item.id)
+                            // setName(item.name);
+                        }}
                       >
                         <FaPenClip />
                       </button>
                       <button
-                        className="btn btn-sm bg-blue-500 text-white font-bold "
-                        // onClick={() => {
-                        //   openModal("add-kategori"),
-                        //     setEdit(true),
-                        //     setIdKatgeori(item.id),
-                        //     setName(item.name);
-                        // }}
+                        className="btn btn-sm bg-blue-500 text-white font-bold tooltip"
+                        data-tip="Reset Password"
+                        onClick={() => trigerReset(item.id)}
                       >
                         <FaKey />
                       </button>
                       <button
-                        className="btn btn-sm bg-red-500 text-white font-bold "
-                        // onClick={() => trigerDelete(item.id)}
+                        className="btn btn-sm bg-red-500 text-white font-bold tooltip"
+                        data-tip="Delete"
+                        onClick={() => trigerDelete(item.id)}
                       >
                         <FaTrash />
                       </button>
@@ -224,10 +335,89 @@ const ManageUser = () => {
               {loading ? (
                 <span className="loading loading-infinity loading-lg"></span>
               ) : (
-                "Login"
+                "Simpan"
               )}
             </button>
           </form>
+        </div>
+      </ModalProps>
+
+      <ModalProps id="edit-user">
+        <div className="w-full flex flex-col items-center">
+          <span className="text-xl font-bold">Edit Data</span>
+          <div
+            className="w-full flex flex-col gap-2 py-3"
+           
+          >
+            <div className="w-full">
+              <label>Nama</label>
+              <input
+                type="text"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                onChange={(e) => setDataUsers({
+                  id: dataUsers.id,
+                  name: e.target.value,
+                  email: dataUsers.email,
+                  roleId: dataUsers.roleId,
+                })}
+                value={dataUsers?.name}
+                name="name"
+              />
+             
+            </div>
+            <div className="w-full">
+              <label>Email</label>
+              <input
+                type="email"
+                placeholder="Type here"
+                className="input input-bordered w-full"
+                onChange={(e) => setDataUsers({
+                  id: dataUsers.id,
+                  name: dataUsers.name,
+                  email: e.target.value,
+                  roleId: dataUsers.roleId,
+                })}
+                value={dataUsers?.email}
+                name="email"
+              />
+             
+            </div>
+           
+
+            <div className="w-full">
+              <label>Role</label>
+              <select
+                id="role"
+                name="role"
+                className="select select-bordered w-full"
+                value={dataUsers?.roleId}
+                onChange={(e) => setDataUsers({
+                  id: dataUsers.id,
+                  name: dataUsers.name,
+                  email: dataUsers.email,
+                  roleId: e.target.value,
+                })}
+              >
+                <option value={""}>Select Role</option>
+                <option value={"1"}>Bendahara</option>
+                <option value={"2"}>Kasir</option>
+              </select>
+              
+            </div>
+            <button
+              className="btn btn-ghost bg-green-500 text-white w-full"
+              
+              onClick={HandleEdit}
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading loading-infinity loading-lg"></span>
+              ) : (
+                "Simpan"
+              )}
+            </button>
+          </div>
         </div>
       </ModalProps>
     </div>

@@ -278,23 +278,26 @@ const Expense = () => {
                       } `}
                     >
                       <button
-                        className={`btn btn-sm bg-green-500 text-white font-bold ${
+                        className={`btn btn-sm bg-green-500 text-white font-bold tooltip ${
                           role == "2" ? "hidden" : ""
                         }`}
+                        data-tip="Setujui"
                         onClick={() => updateStatus(item.id, "Disetujui")}
                       >
                         <FaCheck />
                       </button>
                       <button
-                        className={`btn btn-sm bg-orange-500 text-white font-bold ${
+                        className={`btn btn-sm bg-orange-500 text-white font-bold tooltip${
                           role == "2" ? "hidden" : ""
                         }`}
+                        data-tip="Tolak"
                         onClick={() => updateStatus(item.id, "Ditolak")}
                       >
                         <IoMdClose />
                       </button>
                       <button
-                        className="btn btn-sm bg-red-500 text-white font-bold "
+                        className="btn btn-sm bg-red-500 text-white font-bold tooltip"
+                        data-tip="Hapus"
                         onClick={() => trigerDelete(item.id)}
                       >
                         <FaTrash />
@@ -392,7 +395,7 @@ const Expense = () => {
               {loading ? (
                 <span className="loading loading-infinity loading-lg"></span>
               ) : (
-                "Login"
+                "Simpan"
               )}
             </button>
           </form>

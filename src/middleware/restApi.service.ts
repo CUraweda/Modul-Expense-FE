@@ -95,6 +95,28 @@ const UserApi = {
       url: `/users`,
       data,
     }),
+  GetUserById: (id: number | null) =>
+    instance({
+      method: "GET",
+      url: `/users/${id}`,
+    }),
+  DeleteUser: (id: number | null) =>
+    instance({
+      method: "DELETE",
+      url: `/users/${id}`,
+    }),
+  EditUser: (id: number | null, data: any) =>
+    instance({
+      method: "PATCH",
+      url: `/users/${id}`,
+      data,
+    }),
+  ResetPassword: (id: number | null, data: any) =>
+    instance({
+      method: "PATCH",
+      url: `/users-reset-password/${id}`,
+      data,
+    }),
 };
 
 export { Auth, ExpenseApi, KategoriApi, UserApi };
