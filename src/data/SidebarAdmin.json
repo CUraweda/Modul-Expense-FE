@@ -24,8 +24,12 @@
         "url": "/admin/manage-user"
       },
       {
-        "name": "kelola kategori",
+        "name": "kelola kategori ekspense",
         "url": "/admin/manage-kategori"
+      },
+      {
+        "name": "kelola kategori user",
+        "url": "/admin/manage-kategori-user"
       }
     ]
   }

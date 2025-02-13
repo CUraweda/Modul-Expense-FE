@@ -5,6 +5,7 @@ import Loading from "../components/Loading";
 import ManageUser from "../pages/ManageUser";
 import ManageKategori from "../pages/ManageKategori";
 import { Store } from "../store/Store";
+import ManageKategoriUser from "../pages/ManageKategoriUser";
 
 const Login = lazy(() => import("../pages/Login"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
@@ -91,6 +92,18 @@ const BaseRouter = () => {
               <Suspense fallback={<Loading />}>
                 <Layout>
                   <ManageKategori/>
+                </Layout>
+              </Suspense>
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/admin/manage-kategori-user"
+          element={
+            <ProtectedRoute allowedRoles={[1]}>
+              <Suspense fallback={<Loading />}>
+                <Layout>
+                  <ManageKategoriUser/>
                 </Layout>
               </Suspense>
             </ProtectedRoute>

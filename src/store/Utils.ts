@@ -8,5 +8,8 @@ export interface StoreState {
   
     id: string | null;
     setId: (id: string | null) => void;
+
+    idKategori: string | null;
+    setIdKategori: (id: string | null) => void;
   
   }

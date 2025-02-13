@@ -1,9 +1,19 @@
-import { ExpenseApi, KategoriApi } from "./restApi.service";
+import { ExpenseApi, KategoriApi, KategoriUser } from "./restApi.service";
 
 export const getAllKategory = async () => {
   try {
     const { data } = await KategoriApi.GetKategori();
     return data?.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const getAllKategoryUser = async () => {
+  try {
+    const { data } = await KategoriUser.GetKategoriUsers();
+  
+    return data;
+    
   } catch (error) {
     console.log(error);
   }

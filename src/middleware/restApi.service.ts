@@ -50,10 +50,10 @@ const ExpenseApi = {
       url: `/expense/status/${id}`,
       data: status,
     }),
-  GetValueDashboard: () =>
+  GetValueDashboard: (id: string | number | null) =>
     instance({
       method: "GET",
-      url: `/expense-summary`,
+      url: `/expense-summary/${id}`,
     }),
 };
 
@@ -119,4 +119,28 @@ const UserApi = {
     }),
 };
 
-export { Auth, ExpenseApi, KategoriApi, UserApi };
+const KategoriUser ={
+  GetKategoriUsers: () =>
+    instance({
+      method: "GET",
+      url: `/kategori-user`,
+    }),
+    CreateKategori: (data: any) =>
+      instance({
+        method: "POST",
+        url: `/kategori-user`,
+        data,
+      }),
+    Delete: (id: number | string | null) =>
+      instance({
+        method: "DELETE",
+        url: `/kategori-user/${id}`,
+      }),
+    Edit: (id: number | string | null, data: any) =>
+      instance({
+        method: "PATCH",
+        url: `/kategori-user/${id}`,
+        data,
+      }),
+}
+export { Auth, ExpenseApi, KategoriApi, UserApi, KategoriUser };

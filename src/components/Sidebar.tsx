@@ -30,8 +30,7 @@ const Sidebar = () => {
   
   useEffect(() => {
     role === '1' ? setData(menuAdmin) : setData(menuKasir);
-    console.log(role);
-    
+  
   }, []);
 
   const handleMenuItemClick = (name: string) => {

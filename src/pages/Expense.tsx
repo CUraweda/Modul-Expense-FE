@@ -319,10 +319,10 @@ const Expense = () => {
             onSubmit={formik.handleSubmit}
           >
             <div className="w-full">
-              <label>Nama</label>
+              <label>Keterangan</label>
               <input
                 type="text"
-                placeholder="Input Nama"
+                placeholder="Input Keterangan"
                 className="input input-bordered w-full"
                 name="name"
                 onChange={formik.handleChange}

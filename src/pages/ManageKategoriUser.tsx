@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import ModalProps, { closeModal, openModal } from "../components/ModalProps";
-import { KategoriApi } from "../middleware/restApi.service";
+import {  KategoriUser } from "../middleware/restApi.service";
 import { FaTrash } from "react-icons/fa";
 import { FaPenClip } from "react-icons/fa6";
-import { getAllKategory } from "../middleware/global.service";
+import {  getAllKategoryUser } from "../middleware/global.service";
 import Swal from "sweetalert2";
 
-const ManageKategori = () => {
+const ManageKategoriUser = () => {
   const [dataKategori, setDataKategori] = useState<any[]>([]);
   const [name, setName] = useState<string>("");
   const [idKategori, setIdKatgeori] = useState<string>("");
@@ -17,17 +17,16 @@ const ManageKategori = () => {
   }, []);
 
   const getKategory = async () => {
-    const kate = await getAllKategory();
-    setDataKategori(kate);
+    const {data} = await getAllKategoryUser();
+    setDataKategori(data);
   };
 
   const createKategori = async () => {
     try {
       const data = {
         name: name,
-        status : true
       }
-      await KategoriApi.CreateKategori(data);
+      await KategoriUser.CreateKategori(data);
       closeModal("add-kategori");
 
       Swal.fire({
@@ -56,7 +55,7 @@ const ManageKategori = () => {
   const deleteKategori = async (id: string | number | null) => {
     try {
       const idExpense = Number(id);
-      const res = await KategoriApi.Delete(idExpense);
+      const res = await KategoriUser.Delete(idExpense);
       if (res) {
         Swal.fire({
           title: "Deleted!",
@@ -93,7 +92,7 @@ const ManageKategori = () => {
 
   const editKategory = async () => {
     try {
-      await KategoriApi.Edit(Number(idKategori), { name });
+      await KategoriUser.Edit(Number(idKategori), { name });
       closeModal("add-kategori");
 
       Swal.fire({
@@ -118,9 +117,10 @@ const ManageKategori = () => {
       });
     }
   };
+
   return (
     <div className="p-5 w-full">
-      <span className="text-3xl font-bold">Manage Kategori Ekspense</span>
+      <span className="text-3xl font-bold">Manage Kategori User</span>
       <div className="divider divider-warning"></div>
       <div className="flex gap-2 justify-end items-end">
         <button
@@ -144,7 +144,7 @@ const ManageKategori = () => {
               </tr>
             </thead>
             <tbody>
-              {dataKategori?.map((item: any, index: number) => (
+              {dataKategori.map((item: any, index: number) => (
                 <tr>
                   <td>{index + 1}</td>
                   <td>{item.name}</td>
@@ -207,4 +207,4 @@ const ManageKategori = () => {
   );
 };
 
-export default ManageKategori;
+export default ManageKategoriUser;

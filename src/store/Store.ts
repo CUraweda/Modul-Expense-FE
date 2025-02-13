@@ -35,6 +35,16 @@ const Store = create<StoreState>((set: StoreApi<any>["setState"]) => ({
     }
     set({ id });
   },
+
+  idKategori: sessionStorage.getItem("kategoriId"),
+  setIdKategori: (id) => {
+    if (id) {
+      sessionStorage.setItem("kategoriId", id);
+    } else {
+      sessionStorage.removeItem("kategoriId");
+    }
+    set({ id });
+  },
 }));
 
 export { Store };

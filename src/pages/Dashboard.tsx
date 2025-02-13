@@ -5,24 +5,27 @@ import { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { formatMoney } from "../utils";
 import { ExpenseApi } from "../middleware/restApi.service";
-import { FaRectangleList, FaScaleBalanced } from "react-icons/fa6";
+import { FaRectangleList } from "react-icons/fa6";
 import { Store } from "../store/Store";
 import { IoMdClose } from "react-icons/io";
-import { getExpenses, updateStatusProps } from "../middleware/global.service";
+import { getAllKategoryUser, getExpenses, updateStatusProps } from "../middleware/global.service";
 import Swal from "sweetalert2";
 
 const Dashboard = () => {
+  const { role, id, idKategori } = Store();
   const [dataList, setDataList] = useState<any>();
   const [expenses, setExpenses] = useState<any>();
   const [chartData, setChartData] = useState<any>(null);
-  const { role, id } = Store();
+  const [kategori, setKategori] = useState<any>([]);
+  const [selectkategori, setSelectKategori] = useState<any>(idKategori ?? '');
   useEffect(() => {
     getData();
     getExpense();
-  }, []);
+    getKategoriUser()
+  }, [selectkategori]);
 
   const getData = async () => {
-    const { data } = await ExpenseApi.GetValueDashboard();
+    const { data } = await ExpenseApi.GetValueDashboard(selectkategori);
 
     if (data?.data?.sumarryMount) {
       setDataList(data?.data);
@@ -101,6 +104,11 @@ const Dashboard = () => {
 
     setExpenses(expenseData.filter((item: any) => item.status === "Pending"));
   };
+  const getKategoriUser = async () => {
+    const { data } = await getAllKategoryUser();
+
+    setKategori(data);
+  };
 
   const updateStatus = async (id: string | number | null, status: string) => {
     const update = await updateStatusProps(id, status);
@@ -124,6 +132,35 @@ const Dashboard = () => {
   return (
     <>
       <div className="w-full p-5">
+        {role == '1' &&
+
+          <div className="w-full flex justify-end">
+            <div className="w-max-32">
+
+              <select
+                id="kategoriId"
+                name="kategoriId"
+                className="select select-bordered w-full"
+                value={Number(selectkategori)}
+                onChange={(e) =>
+                  setSelectKategori(Number(e.target.value))
+
+                }
+
+              >
+                <option value={""}>Semua Kategori</option>
+                {
+                  kategori?.map((item: any, index: number) => (
+
+                    <option value={item.id} key={index}>{item.name}</option>
+                  ))
+                }
+
+              </select>
+
+            </div>
+          </div>
+        }
         <div className="w-full flex flex-wrap gap-3 mt-3">
           <div className="stat w-fit grow bg-base-100 rounded-lg">
             <div className="stat-figure text-primary">
@@ -190,31 +227,28 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex w-full justify-end">
-                    <span
-                      className={`py-1 px-3 rounded-xl ${
-                        item?.status == "Pending"
+                      <span
+                        className={`py-1 px-3 rounded-xl ${item?.status == "Pending"
                           ? "text-yellow-700 bg-yellow-100"
                           : item?.status == "Ditolak"
-                          ? "text-red-700 bg-red-100"
-                          : "text-green-700 bg-green-100"
-                      }`}
-                    >
-                      {item?.status}
-                    </span>
+                            ? "text-red-700 bg-red-100"
+                            : "text-green-700 bg-green-100"
+                          }`}
+                      >
+                        {item?.status}
+                      </span>
                     </div>
                     <div className="w-full justify-end flex">
                       <button
-                        className={`btn btn-sm bg-green-500 text-white font-bold ${
-                          role == "2" ? "hidden" : ""
-                        }`}
+                        className={`btn btn-sm bg-green-500 text-white font-bold ${role == "2" ? "hidden" : ""
+                          }`}
                         onClick={() => updateStatus(item.id, "Disetujui")}
                       >
                         <FaCheck />
                       </button>
                       <button
-                        className={`btn btn-sm bg-orange-500 text-white font-bold ${
-                          role == "2" ? "hidden" : ""
-                        }`}
+                        className={`btn btn-sm bg-orange-500 text-white font-bold ${role == "2" ? "hidden" : ""
+                          }`}
                         onClick={() => updateStatus(item.id, "Ditolak")}
                       >
                         <IoMdClose />

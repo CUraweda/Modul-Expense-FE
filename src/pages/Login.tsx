@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { setToken, setRole, setId } = Store();
+  const { setToken, setRole, setId , setIdKategori} = Store();
 
   const formik = useFormik({
     initialValues: {
@@ -37,6 +37,7 @@ const Login = () => {
           setRole(role.toString());
           setToken(data.data.access_token);
           setId(data.data.userId)
+          setIdKategori(data.data.kategoriId)
           navigate("/admin/dashboard");
          
         } else {

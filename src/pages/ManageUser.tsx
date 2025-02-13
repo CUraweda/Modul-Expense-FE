@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import ModalProps, { closeModal, openModal } from "../components/ModalProps";
-import { UserApi } from "../middleware/restApi.service";
+import {  UserApi } from "../middleware/restApi.service";
 import { FaPenClip } from "react-icons/fa6";
 import { FaKey, FaTrash } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
+import { getAllKategoryUser } from "../middleware/global.service";
 
 const schema = Yup.object({
   name: Yup.string().required("Nama wajib diisi"),
@@ -13,20 +14,27 @@ const schema = Yup.object({
   password: Yup.string().required("password wajib diisi"),
   role: Yup.string().required("role wajib diisi"),
   id: Yup.string(),
+  KategoriId: Yup.string(),
 });
 
 const ManageUser = () => {
   const [users, setUsers] = useState<any>([]);
+  const [kategori, setKategori] = useState<any>([]);
   const [dataUsers, setDataUsers] = useState<any>();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getUsers();
+    getKategoriUser()
   }, []);
 
   const getUsers = async () => {
     const { data } = await UserApi.GetUsers();
     setUsers(data?.data);
+  };
+  const getKategoriUser = async () => {
+    const { data } = await getAllKategoryUser();
+    setKategori(data);
   };
 
   const getUsersById = async (id: string) => {
@@ -35,13 +43,15 @@ const ManageUser = () => {
     setDataUsers(dataUser)
     
   };
-
+ 
+  
   const HandleEdit = async () => {
     try {
       const data = {
         name: dataUsers.name,
         email: dataUsers.email,
-        roleId: Number(dataUsers.roleId)
+        roleId: Number(dataUsers.roleId),
+        kategoriUserId:Number(dataUsers.kategoriUserId)
       }
       await UserApi.EditUser(Number(dataUsers.id), data);
       Swal.fire({
@@ -66,11 +76,11 @@ const ManageUser = () => {
       password: "",
       role: "",
       id: "",
+      kategoriId: ""
     },
     validationSchema: schema,
     onSubmit: async (values) => {
-      console.log("ini jalan");
-
+    
       try {
         setLoading(true);
         const dataProps = {
@@ -79,6 +89,7 @@ const ManageUser = () => {
           password: values.password,
           confPassword: values.password,
           role: Number(values.role),
+          kategoriUserId: Number(values.kategoriId)
         };
 
         await UserApi.CreateUSer(dataProps);
@@ -210,6 +221,7 @@ const ManageUser = () => {
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Kategori</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -220,6 +232,7 @@ const ManageUser = () => {
                   <td>{item?.name}</td>
                   <td>{item?.email}</td>
                   <td>{item?.role.name}</td>
+                  <td>{item?.kategoriUser?.name ?? '-'}</td>
                   <td>
                     <div className="w-full flex gap-1">
                       <button
@@ -327,8 +340,33 @@ const ManageUser = () => {
                 <div className="w-5/6 text-red-500">{formik.errors.role}</div>
               ) : null}
             </div>
+            <div className="w-full">
+              <label>Kategori User</label>
+              <select
+                id="kategoriId"
+                name="kategoriId"
+                className="select select-bordered w-full"
+                value={Number(formik.values.kategoriId)}
+                onChange={(e) =>
+                  formik.setFieldValue("kategoriId", Number(e.target.value))
+                }
+                onBlur={formik.handleBlur}
+              >
+                <option value={""}>Select Kategori</option>
+                {
+                  kategori.map((item: any, index: number) => (
+
+                    <option value={item.id} key={index}>{item.name}</option>
+                  ))
+                }
+               
+              </select>
+              {formik.errors.kategoriId && formik.touched.kategoriId ? (
+                <div className="w-5/6 text-red-500">{formik.errors.kategoriId}</div>
+              ) : null}
+            </div>
             <button
-              className="btn btn-ghost bg-green-500 text-white w-full"
+              className="btn btn-ghost bg-green-500 text-white w-full mt-5"
               type="submit"
               disabled={loading}
             >
@@ -360,6 +398,7 @@ const ManageUser = () => {
                   name: e.target.value,
                   email: dataUsers.email,
                   roleId: dataUsers.roleId,
+                  kategoriUserId: dataUsers.kategoriUserId,
                 })}
                 value={dataUsers?.name}
                 name="name"
@@ -377,6 +416,7 @@ const ManageUser = () => {
                   name: dataUsers.name,
                   email: e.target.value,
                   roleId: dataUsers.roleId,
+                  kategoriUserId: dataUsers.kategoriUserId,
                 })}
                 value={dataUsers?.email}
                 name="email"
@@ -397,6 +437,7 @@ const ManageUser = () => {
                   name: dataUsers.name,
                   email: dataUsers.email,
                   roleId: e.target.value,
+                  kategoriUserId: dataUsers.kategoriUserId,
                 })}
               >
                 <option value={""}>Select Role</option>
@@ -404,6 +445,33 @@ const ManageUser = () => {
                 <option value={"2"}>Kasir</option>
               </select>
               
+            </div>
+            <div className="w-full">
+              <label>Kategori User</label>
+              <select
+                id="kategoriId"
+                name="kategoriId"
+                className="select select-bordered w-full"
+                value={dataUsers?.kategoriUserId}
+                onChange={(e) => setDataUsers({
+                  id: dataUsers.id,
+                  name: dataUsers.name,
+                  email: dataUsers.email,
+                  roleId: dataUsers.roleId,
+                  kategoriUserId: e.target.value,
+                })}
+                onBlur={formik.handleBlur}
+              >
+                <option value={""}>Select Kategori</option>
+                {
+                  kategori.map((item: any, index: number) => (
+
+                    <option value={item.id} key={index}>{item.name}</option>
+                  ))
+                }
+               
+              </select>
+             
             </div>
             <button
               className="btn btn-ghost bg-green-500 text-white w-full"
